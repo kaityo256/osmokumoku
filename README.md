@@ -39,3 +39,26 @@ qemu-system-x86_64 -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_CODE.fd
 ![qemu](fig/210517_qemu.png)
 
 Hello Worldが出なかった。
+
+家で上記をそのまま実行したらHello, World!が出た。
+
+![helloworld](fig/210517_hello_world.png)
+
+qemuのバージョンは4.2.1。
+
+```sh
+$ qemu-system-x86_64 --version
+QEMU emulator version 4.2.1 (Debian 1:4.2-3ubuntu6.16)
+Copyright (c) 2003-2019 Fabrice Bellard and the QEMU Project developers
+```
+
+Ubuntuのバージョンは
+
+```sh
+$ cat /etc/os-release |grep VERSION
+VERSION="20.04.2 LTS (Focal Fossa)"
+VERSION_ID="20.04"
+VERSION_CODENAME=focal
+```
+
+後で学校のマシンとの違いを調べること。
