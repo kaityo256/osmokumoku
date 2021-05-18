@@ -28,6 +28,10 @@ git clone https://github.com/uchan-nos/mikanos-build.git osbook
 git clone https://github.com/kaityo256/osmokumoku.git
 ```
 
+以下、`osmokumoku`ディレクトリの`chap01_wsl`で作業。
+
+
+
 `osmokumoku`ディレクトリの中のchap01_wslの`mkimg.sh`と`run.sh`を実行する。
 
 ```sh
@@ -40,6 +44,12 @@ source run.sh
 QEMUが起動し、Hello, world!が表示されるはず。
 
 ## Macでの環境構築
+
+### バイナリエディタ
+
+Macのバイナリエディタはとりあえず[Hex Fiend(https://hexfiend.com/)]が良いと思われる。ViewsのLine Number FormatをHexadecimalにして、幅も調整すると本との対応をつけやすい。
+
+![Hex Fiend](fig/hexfiend.png)
 
 ### リポジトリのクローン
 
