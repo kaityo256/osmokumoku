@@ -30,24 +30,45 @@ git clone https://github.com/kaityo256/osmokumoku.git
 
 以下、`osmokumoku`ディレクトリの`chap01_wsl`で作業。
 
-
-
-`osmokumoku`ディレクトリの中のchap01_wslの`mkimg.sh`と`run.sh`を実行する。
-
 ```sh
 cd osmokumoku
 cd chap01_wsl
+```
+
+イメージの作成手順。
+
+```sh
+qemu-img create -f raw disk.img 200M
+mkfs.fat -n 'MIKAN OS' -s 2 -f 2 -R 32 -F 32 disk.img
+mkdir -p mnt
+sudo mount -o loop disk.img mnt
+sudo mkdir -p mnt/EFI/BOOT
+sudo cp BOOTX64.EFI mnt/EFI/BOOT/BOOTX64.EFI
+sudo umount mnt
+```
+
+QEMUで実行
+
+```sh
+qemu-system-x86_64 -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_CODE.fd -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_VARS.fd -hda disk.img
+```
+
+以上をまとめて以下のようにシェルスクリプトを実行しても良い。
+
+```sh
 source mkimg.sh
 source run.sh
 ```
 
 QEMUが起動し、Hello, world!が表示されるはず。
 
+![fig](fig/hello_world.png)
+
 ## Macでの環境構築
 
 ### バイナリエディタ
 
-Macのバイナリエディタはとりあえず[Hex Fiend(https://hexfiend.com/)]が良いと思われる。ViewsのLine Number FormatをHexadecimalにして、幅も調整すると本との対応をつけやすい。
+Macのバイナリエディタはとりあえず[Hex Fiend](https://hexfiend.com/)が良いと思われる。ViewsのLine Number FormatをHexadecimalにして、幅も調整すると本との対応をつけやすい。
 
 ![Hex Fiend](fig/hexfiend.png)
 
@@ -104,6 +125,10 @@ cp BOOTX64.EFI /Volumes/MIKAN\ OS/EFI/BOOT
 ```sh
 qemu-system-x86_64 -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_CODE.fd -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_VARS.fd -hda disk.img
 ```
+
+QEMUが起動し、Hello, world!が表示されるはず。
+
+![fig](fig/hello_world_mac.png)
 
 ### シェルスクリプト
 
