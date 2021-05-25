@@ -36,6 +36,16 @@ localhost                  : ok=9    changed=4    unreachable=0    failed=0    s
 
 最後まで通った。
 
+```sh
+$ iasl -v
+
+Intel ACPI Component Architecture
+ASL+ Optimizing Compiler/Disassembler version 20190509
+Copyright (c) 2000 - 2019 Intel Corporation
+```
+
+iaslも入った。
+
 Macでもansibleを入れてみる。
 
 ```sh
@@ -43,6 +53,42 @@ brew install ansible
 ```
 
 ansibleは入るが、コマンドがUbuntuを前提にしているため、そのまま実行できない。ansibleの中身を見て実行する必要あり。
+
+MikanOSのソースコードを入手。
+
+```sh
+cd github
+git clone https://github.com/uchan-nos/mikanos.git
+cd ~/edk2
+ln -s ~/github/mikanos/MikanLoaderPkg ./
+```
+
+edksetup.shを実行。
+```sh
+$ source edksetup.sh
+Usage: edksetup.sh [Options]
+
+The system environment variable, WORKSPACE, is always set to the current
+working directory.
+
+Options:
+  --help, -h, -?        Print this help screen and exit.
+
+  --reconfig            Overwrite the WORKSPACE/Conf/*.txt files with the
+                        template files from the BaseTools/Conf directory.
+
+Please note: This script must be 'sourced' so the environment can be changed.
+. edksetup.sh
+source edksetup.sh
+```
+
+実行できない。
+
+C言語からのEFI実行。
+
+![hello from c](fig/hello_from_c.png)
+
+できたぞ。
 
 ## 5月18日
 
