@@ -1,5 +1,49 @@
 # 作業ログ
 
+## 5月31日
+
+WSL2上でもう一度ansibleに挑戦。
+
+```sh
+$ ansible-playbook -K -i ansible_inventory ansible_provision.yml
+(snip)
+TASK [clone EDK II repository] ***************************************************************
+changed: [localhost]
+
+TASK [build EDK II base tools] ***************************************************************
+changed: [localhost]
+
+TASK [download standard libraries] ***********************************************************
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "dest '/home/watanabe/osbook/devenv' must be an existing dir"}
+
+PLAY RECAP ***********************************************************************************
+localhost                  : ok=7    changed=5    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0
+```
+
+EDK IIのインストールまでは行ったが、「TASK [download standard libraries] 」で失敗している。なぜだ？
+
+どうやら、osbookが`$HOME`直下にないとダメだった模様。再度挑戦。
+
+```sh
+$ ansible-playbook -K -i ansible_inventory ansible_provision.yml
+(snip)
+TASK [configure display variable if WSL2] ****************************************************
+changed: [localhost]
+
+PLAY RECAP ***********************************************************************************
+localhost                  : ok=9    changed=4    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+```
+
+最後まで通った。
+
+Macでもansibleを入れてみる。
+
+```sh
+brew install ansible
+```
+
+ansibleは入るが、コマンドがUbuntuを前提にしているため、そのまま実行できない。ansibleの中身を見て実行する必要あり。
+
 ## 5月18日
 
 学校のマシン。
