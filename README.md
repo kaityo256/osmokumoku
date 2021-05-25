@@ -91,7 +91,7 @@ cd chap01_mac
 ### qemuとdosfstoolsのインストール
 
 ```sh
-brew install qemu qemu-system dosfstools
+brew install qemu dosfstools
 ```
 
 ### ディスクイメージの作成
