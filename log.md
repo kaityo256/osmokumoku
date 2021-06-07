@@ -32,6 +32,16 @@ $ which clang++
 
 これでhello.efiが作れるようになったが、これをそのまま`/Volumes/MIKAN\ OS/EFI/BOOT/`に突っ込んでもダメで、`BOOTX64.EFI`という名前にしないとダメだった。でもこれでMacでもC言語からBootできた。
 
+Macでのqemuのバージョン。
+
+```sh
+$ qemu-system-x86_64 --version
+QEMU emulator version 5.2.0
+Copyright (c) 2003-2020 Fabrice Bellard and the QEMU Project developers
+```
+
+WSLでのバージョンは4.2.1。hello.efiのままで良いか、それともBOOTX64.EFIにしないといけないのかは、このバージョン差異のせいか？
+
 ## 5月31日
 
 WSL2上でもう一度ansibleに挑戦。
