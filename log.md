@@ -121,7 +121,11 @@ C言語からのEFI実行。
 
 ![hello from c](fig/hello_from_c.png)
 
-できたぞ。
+できたぞ。`chap01_c`で
+
+```sh
+
+
 
 
 
