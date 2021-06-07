@@ -136,3 +136,8 @@ open disk.img
 cp hello.efi /Volumes/MIKAN\ OS/EFI/BOOT/BOOTX64.EFI
 ```
 
+この、`qemu-img create`から、`cp hello.efi`までの手順は`mkimg.sh`にまとめてある。
+
+ここまできたら、FinderからMIKAN OSを手でアンマウントして、QEMUを実行する。
+
+![fig](fig/hello_c_mac.png)
