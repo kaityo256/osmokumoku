@@ -1,5 +1,37 @@
 # 作業ログ
 
+## 6月7日
+
+[ここ](https://qiita.com/yamoridon/items/4905765cc6e4f320c9b5)を参考に、MacでC言語からHello Worldに挑戦。
+
+```sh
+$ brew install llvm
+
+Error: llvm 11.1.0 is already installed.
+To upgrade to 12.0.0, run:
+```
+
+11.1.0が入っていたが、12.0.0にアップグレード。
+
+```sh
+brew upgrade llvm
+```
+
+llvmは`/usr/local/opt/llvm/bin`にインストールされるが、ここには自動でパスは通らないようだ。
+
+```sh
+export PATH=/usr/local/opt/llvm/bin:$PATH
+```
+
+```sh
+$ which clang++
+/usr/local/opt/llvm/bin/clang++
+```
+
+うん、パスが通った。
+
+これでhello.efiが作れるようになったが、これをそのまま`/Volumes/MIKAN\ OS/EFI/BOOT/`に突っ込んでもダメで、`BOOTX64.EFI`という名前にしないとダメだった。でもこれでMacでもC言語からBootできた。
+
 ## 5月31日
 
 WSL2上でもう一度ansibleに挑戦。
@@ -64,6 +96,7 @@ ln -s ~/github/mikanos/MikanLoaderPkg ./
 ```
 
 edksetup.shを実行。
+
 ```sh
 $ source edksetup.sh
 Usage: edksetup.sh [Options]
@@ -89,6 +122,8 @@ C言語からのEFI実行。
 ![hello from c](fig/hello_from_c.png)
 
 できたぞ。
+
+
 
 ## 5月18日
 
