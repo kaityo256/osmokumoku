@@ -140,4 +140,19 @@ cp hello.efi /Volumes/MIKAN\ OS/EFI/BOOT/BOOTX64.EFI
 
 ここまできたら、FinderからMIKAN OSを手でアンマウントして、QEMUを実行する。
 
+```sh
+qemu-system-x86_64 -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_CODE.fd -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_VARS.fd -hda disk.img
+```
+
+以下のような画面が出れば成功。
+
 ![fig](fig/hello_c_mac.png)
+
+以上の手順をまとめたシェルスクリプトが`chap01_c`にある。以下のように実行するだけで上記の状況を再現できる。
+
+```sh
+make
+./mkimg.sh
+# FinderでMIKAN OSを手動でアンマウント
+./run.sh
+```
