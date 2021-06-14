@@ -61,3 +61,96 @@ source run.sh
 QEMUが起動し、Hello, world!が表示されるはず。
 
 ![fig](fig/hello_world.png)
+
+## EDK IIからの実行
+
+`mikanos`のリポジトリをクローンする。
+
+```sh
+mkdir workspace
+cd workspace
+git clone https://github.com/uchan-nos/mikanos.git
+cd mikanos
+```
+
+`osbook_day02a`タグをチェックアウトする。
+
+```sh
+git checkout -b osbook_day02a refs/tags/osbook_day02a
+```
+
+EDK IIでシンボリックリンクをはる。
+
+```sh
+cd ~/edk2
+ln -s ~/workspace/mikanos/MikanLoaderPkg ./
+```
+
+ここで、`edksetup.sh`を実行するのだが、**zshでは動かない**。こうなってしまう。
+
+```sh
+$ source ./edksetup.sh
+Usage: edksetup.sh [Options]
+
+The system environment variable, WORKSPACE, is always set to the current
+working directory.
+
+Options:
+  --help, -h, -?        Print this help screen and exit.
+
+  --reconfig            Overwrite the WORKSPACE/Conf/*.txt files with the
+                        template files from the BaseTools/Conf directory.
+
+Please note: This script must be 'sourced' so the environment can be changed.
+. edksetup.sh
+source edksetup.sh
+```
+
+bashなら動く。
+
+```sh
+$ source ./edksetup.sh
+Using EDK2 in-source Basetools
+WORKSPACE: /home/watanabe/edk2
+EDK_TOOLS_PATH: /home/watanabe/edk2/BaseTools
+CONF_PATH: /home/watanabe/edk2/Conf
+Copying $EDK_TOOLS_PATH/Conf/build_rule.template
+     to /home/watanabe/edk2/Conf/build_rule.txt
+Copying $EDK_TOOLS_PATH/Conf/tools_def.template
+     to /home/watanabe/edk2/Conf/tools_def.txt
+Copying $EDK_TOOLS_PATH/Conf/target.template
+     to /home/watanabe/edk2/Conf/target.txt
+```
+
+`Conf/target.txt`を、本の通りに書き直した後で`build`する。
+
+```sh
+cd ~/edk2
+build
+```
+
+`~/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64`に、`Loader.efi`ができていれば成功。
+
+これをイメージに読み込む。方法を`osmokumoku/wsl/chap02_edk`にまとめた。
+
+`mkimg.sh`の内容。これまでとの違いはEFIファイルをedk2のところからコピーするところ。
+
+```sh
+qemu-img create -f raw disk.img 200M
+mkfs.fat -n 'MIKAN OS' -s 2 -f 2 -R 32 -F 32 disk.img
+mkdir -p mnt
+sudo mount -o loop disk.img mnt
+sudo mkdir -p mnt/EFI/BOOT
+sudo cp ~/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi mnt/EFI/BOOT/BOOTX64.EFI
+sudo umount mnt
+```
+
+`run.sh`は同じ。
+
+```sh
+qemu-system-x86_64 -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_CODE.fd -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_VARS.fd -hda disk.img
+```
+
+実行すると「Hello, Mikan World」が表示される。
+
+![Hello, Mikan World"](fig/hello_mikan.png)

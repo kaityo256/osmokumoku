@@ -1,5 +1,79 @@
 # 作業ログ
 
+## 6月14日
+
+EDK IIの作業。
+
+mikanosのリポジトリのclone先は、書籍では`$HOME/workspace`が仮定されているが、`mikanos-build`では指定されていない？
+
+mikanosでosbook_day02aがcheckoutできない。普通にやるとdetached headになってしまう。
+
+```sh
+Note: switching to 'osbook_day02a'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by switching back to a branch.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -c with the switch command. Example:
+
+  git switch -c <new-branch-name>
+
+Or undo this operation with:
+
+  git switch -
+
+Turn off this advice by setting config variable advice.detachedHead to false
+
+HEAD is now at 5829bef change code style
+```
+
+ちゃんとタグを指定してcheckoutする。
+
+```sh
+git checkout -b osbook_day02a refs/tags/osbook_day02a
+```
+
+これが必要。EDK IIが動かない。`~/edk`を削除してもう一度ansibleやってみる。ダメ。こうなる。
+
+```sh
+$ source ./edksetup.sh
+Usage: edksetup.sh [Options]
+
+The system environment variable, WORKSPACE, is always set to the current
+working directory.
+
+Options:
+  --help, -h, -?        Print this help screen and exit.
+
+  --reconfig            Overwrite the WORKSPACE/Conf/*.txt files with the
+                        template files from the BaseTools/Conf directory.
+
+Please note: This script must be 'sourced' so the environment can be changed.
+. edksetup.sh
+source edksetup.sh
+```
+
+もしかして・・・とbashに変えて実行してみた。
+
+```sh
+$ source ./edksetup.sh
+Loading previous configuration from /home/watanabe/edk2/Conf/BuildEnv.sh
+Using EDK2 in-source Basetools
+WORKSPACE: /home/watanabe/edk2
+EDK_TOOLS_PATH: /home/watanabe/edk2/BaseTools
+CONF_PATH: /home/watanabe/edk2/Conf
+```
+
+動くじゃないか！ zshのせいだったのか！！
+
+```sh
+build
+```
+
+ビルドできた・・・。
+
 ## 6月7日
 
 [ここ](https://qiita.com/yamoridon/items/4905765cc6e4f320c9b5)を参考に、MacでC言語からHello Worldに挑戦。
