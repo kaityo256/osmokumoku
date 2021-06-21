@@ -1,5 +1,17 @@
 # 作業ログ
 
+## 6月21日
+
+EFIのブートイメージ、BOOTX64.EFIという名前にしないといけないの、`osbook/devenv/run_qemu.sh`の中でちゃんとやってた。具体的には`mikanos-build/devenv/make_image.sh`の中のここだ。
+
+```sh
+sudo cp $EFI_FILE $MOUNT_POINT/EFI/BOOT/BOOTX64.EFI
+```
+
+P.44 で、`hello.efi`から直接イメージを作って実行しているが、その際に名前を変えていたのか。拡張子がefiのものがEFI/BOOTに入ってたら、それで良いと思ってた。
+
+QEMUのターミナルモードを初めて使ったが、これはgdbとほぼ同じですね。
+
 ## 6月14日
 
 EDK IIの作業。
