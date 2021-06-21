@@ -19,6 +19,8 @@ Copyright (c) 2003-2019 Fabrice Bellard and the QEMU Project developers
 
 ### リポジトリのクローンと実行
 
+以下、`osmokumoku`を`~/github`以下にクローンしたことを前提にする。
+
 ```sh
 mkdir github
 cd github
@@ -154,3 +156,55 @@ qemu-system-x86_64 -drive if=pflash,file=$HOME/github/osbook/devenv/OVMF_CODE.fd
 実行すると「Hello, Mikan World」が表示される。
 
 ![Hello, Mikan World"](fig/hello_mikan.png)
+
+## 2.7 メモリマップの確認
+
+EDK2でhello worldまでできてればすぐできる。
+
+```sh
+cd ~/workspace/mikanos
+git checkout -b osbook_day02b osbook_day02b
+cd ~/edk2
+source edksetup.sh
+build
+```
+
+として、`Loader.efi`を作ってから、適当なところで`run_qemu.sh`を実行すればよい。このリポジトリでは `chap02_mmap`に移動して`run.sh`を実行すれば同じことができる。
+
+```sh
+cd ~/github/osmokumoku
+cd wsl/chap02_mmap
+source run.sh
+```
+
+ちなみに`run.sh`の中身は以下の通り。
+
+```sh
+~/osbook/devenv/run_qemu.sh ~/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi
+```
+
+以下のような画面が出れば成功。
+
+![fig/mmap.png](fig/mmap.png)
+
+同じディレクトリに`disk.img`ができているはずなので、それをマウントし、中身を確認する。
+
+```sh
+$ mkdir -p mnt
+$ sudo mount -o loop disk.img mnt
+$ ls mnt
+EFI/  memmap*
+$ cat mnt/memmap
+0, 3, EfiBootServicesCode, 00000000, 1, F
+1, 7, EfiConventionalMemory, 00001000, 9F, F
+2, 7, EfiConventionalMemory, 00100000, 700, F
+(snip)
+41, 6, EfiRuntimeServicesData, 3FEF4000, 84, F
+42, A, EfiACPIMemoryNVS, 3FF78000, 88, F
+43, 6, EfiRuntimeServicesData, FFC00000, 400, 1
+```
+
+## 3章
+
+### 3.3
+
