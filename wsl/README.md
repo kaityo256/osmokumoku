@@ -208,3 +208,65 @@ $ cat mnt/memmap
 
 ### 3.3
 
+```sh
+cd ~/workspace/mikanos
+git checkout -b osbook_day03a osbook_day03a
+cd kernel
+clang++ -O2 -Wall -g --target=x86_64-elf -ffreestanding -mno-red-zone -fno-exceptions -fno-rtti -std=c++17 -c main.cpp
+ld.lld --entry KernelMain -z norelro --image-base 0x100000 --static -o kernel.elf main.o
+```
+
+これで`kernel.elf`ができる。できたか`readelf`で見てみる。
+
+```sh
+$ readelf -h kernel.elf
+ELF ヘッダ:
+  マジック:   7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
+  クラス:                            ELF64
+  データ:                            2 の補数、リトルエンディアン
+  Version:                           1 (current)
+  OS/ABI:                            UNIX - System V
+  ABI バージョン:                    0
+  型:                                EXEC (実行可能ファイル)
+  マシン:                            Advanced Micro Devices X86-64
+  バージョン:                        0x1
+  エントリポイントアドレス:               0x101000
+  プログラムヘッダ始点:          64 (バイト)
+  セクションヘッダ始点:          8904 (バイト)
+  フラグ:                            0x0
+  Size of this header:               64 (bytes)
+  Size of program headers:           56 (bytes)
+  Number of program headers:         4
+  Size of section headers:           64 (bytes)
+  Number of section headers:         14
+  Section header string table index: 12
+  ```
+
+重要なのはエントリポイントアドレス。`0x101000`になっている。
+
+EDK IIへ行く。
+
+```sh
+cd ~/edk2
+bash # 僕はzshなのでbashに切り替えなければならない
+source edksetup.sh
+build
+```
+
+その後、
+
+```sh
+~/osbook/devenv/run_qemu.sh ~/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi ./kernel.elf
+```
+
+で実行できる。
+
+以上を、`run_qemu.sh`を使わない実行方法として、`osmokumoku/wsl/chap03_3`に以下を用意した。
+
+```sh
+make
+./mkimg.sh
+./run.sh
+```
+
+これでQEMUが実行される。事前にEDK IIでビルドを済ませておかなければならない。
