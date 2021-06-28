@@ -1,5 +1,9 @@
 # 作業ログ
 
+## 6月28日
+
+Chapter 3.3まで。WSLの時計がまた狂っており、EDK IIのビルドに失敗していた。`run_qemu.sh`を使わず、自分でイメージを作って実行してみた。
+
 ## 6月21日
 
 EFIのブートイメージ、BOOTX64.EFIという名前にしないといけないの、`osbook/devenv/run_qemu.sh`の中でちゃんとやってた。具体的には`mikanos-build/devenv/make_image.sh`の中のここだ。
