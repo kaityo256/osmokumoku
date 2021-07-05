@@ -4,7 +4,7 @@ CPPFLAGS=-I/home/watanabe/osbook/devenv/x86_64-elf/include/c++/v1 -I/home/watana
 
 LDFLAGS=-L/home/watanabe/osbook/devenv/x86_64-elf/lib
 
-kernel.elf:
+kernel.elf: main.cpp
 	clang++ -O2 $(CPPFLAGS) -Wall -g --target=x86_64-elf -ffreestanding -mno-red-zone -fno-exceptions -fno-rtti -std=c++17 -c main.cpp
 	ld.lld $(LDFLAGS)  --entry KernelMain -z norelro --image-base 0x100000 --static -o kernel.elf main.o
 
