@@ -6,7 +6,7 @@
 sudo hwclock -s # WSLは時間がずれることが多いので修正
 sudo apt update
 sudo apt upgrade
-sudo apt install qemu qemu-system qemu-utils
+sudo apt install -y qemu qemu-system qemu-utils ansible
 ```
 
 `qemu-system-x86_64`のバージョンが4.2.1ならOK。
@@ -19,12 +19,64 @@ Copyright (c) 2003-2019 Fabrice Bellard and the QEMU Project developers
 
 ### リポジトリのクローンと実行
 
-以下、`osmokumoku`を`~/github`以下にクローンしたことを前提にする。
+開発ツールの導入
 
 ```sh
-mkdir github
+$ git clone https://github.com/uchan-nos/mikanos-build.git osbook
+$ cd osbook
+$ ansible-playbook -K -i ansible_inventory ansible_provision.yml
+/home/watanabe/.pyenv/libexec/pyenv: 44 行: cd: ansible: ディレクトリではありません
+Traceback (most recent call last):
+  File "/usr/bin/ansible-playbook", line 34, in <module>
+    from ansible import context
+ModuleNotFoundError: No module named 'ansible'
+```
+
+いま使っているPythonがansible moduleを読み込めていない。
+
+```sh
+$ ansible -m ping localhost
+Traceback (most recent call last):
+  File "/usr/bin/ansible", line 34, in <module>
+    from ansible import context
+ModuleNotFoundError: No module named 'ansible'
+```
+
+ダメですね。
+
+```sh
+$ /usr/bin/python3 /usr/bin/ansible -m ping localhost
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+```
+
+いけた。とりあえずインタプリタを直接叩く。
+
+```sh
+$ /usr/bin/python3  /usr/bin/ansible-playbook -K -i ansible_inventory ansible_provision.yml
+```
+
+これでOK。
+
+```txt
+TASK [configure display variable if WSL2] *********************************************************************
+fatal: [localhost]: FAILED! => {"changed": false, "msg": "Destination /home/watanabe/.profile does not exist !", "rc": 257}
+```
+
+途中で上記のエラーでこけることがある。
+
+```sh
+touch ~/.profile
+```
+
+してからやり直したら走った。
+
+```sh
+cd ~/
+mkdir -p github
 cd github
-git clone https://github.com/uchan-nos/mikanos-build.git osbook
 git clone https://github.com/kaityo256/osmokumoku.git
 ```
 
@@ -272,3 +324,39 @@ make
 これでQEMUが実行される。事前にEDK IIでビルドを済ませておかなければならない。実行すると`Hello, Mikan World!`と表示され、QEMUのモニタモードになるので、RIPの値を調べ、その付近のアドレスを表示してみて`hlt`などがあればできている。
 
 ![fig](fig/chap03_3.png)
+
+### 3.5
+
+カーネルからのピクセルの処理。事前にosbookのcheckoutと、edk2のビルドをしておく。
+
+```sh
+cd ~/workspace/mikanos
+git checkout -b osbook_day03a osbook_day03a
+cd ~/edk2
+source ./edksetup.sh
+build
+```
+
+ブートローダができたら、カーネルを作る。`osmokumoku/ws/chap03_3c`にあるのは、適当なPNGファイルを読み込んで実行するカーネルのサンプル。
+
+PNGファイルをPythonで読み込み、インクルードファイルを作っている。
+
+```sh
+python3 fig.py > robo.h
+```
+
+あとはmakeすれば`kernel.elf`ができる。
+
+```sh
+make
+```
+
+edk2でビルドしておく必要がある。
+
+```sh
+./run_qemu.sh
+```
+
+で、以下の画面がでてきたら成功。
+
+![robo_qemu](fig/robo_qemu.png)
