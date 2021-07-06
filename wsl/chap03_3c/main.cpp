@@ -9,14 +9,14 @@ extern "C" void KernelMain(uint64_t frame_buffer_base,
     frame_buffer[i] = 0;
   }
   const int frame_width = 800;
-  const int size = 199;
+  const int size = 200;
   for (uint64_t x = 0; x < size; x++) {
     for (uint64_t y = 0; y < size; y++) {
       uint64_t i = (x + frame_width * y) * 4;
-      uint64_t j = (x + size * y) * 3;
-      frame_buffer[i] = array[j + 2];
+      uint64_t j = (x + size * y) * 4;
+      frame_buffer[i] = array[j];
       frame_buffer[i + 1] = array[j + 1];
-      frame_buffer[i + 2] = array[j];
+      frame_buffer[i + 2] = array[j + 2];
     }
   }
   while (1)
