@@ -10,21 +10,13 @@ extern "C" void KernelMain(uint64_t frame_buffer_base,
   }
   const int LX = 800;
   const int size = 199;
-  for (uint64_t i = 0; i < frame_buffer_size; ++i) {
-    uint64_t j = i / 4;
-    uint64_t x = j % LX;
-    uint64_t y = j / LX;
-    int index = (x + size * y) * 3;
-    if (x < 199 && y < 199) {
-			if(i%4==0){
-        frame_buffer[i] = array[index+2];
-			}
-			if(i%4==1){
-        frame_buffer[i] = array[index+1];
-			}
-			if(i%4==2){
-        frame_buffer[i] = array[index];
-			}
+  for (uint64_t x = 0; x < size; x++) {
+    for (uint64_t y = 0; y < size; y++) {
+      uint64_t i = (x + LX * y) * 4;
+      uint64_t j = (x + size * y) * 3;
+      frame_buffer[i] = array[j + 2];
+      frame_buffer[i + 1] = array[j + 1];
+      frame_buffer[i + 2] = array[j];
     }
   }
   while (1)
