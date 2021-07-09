@@ -1,5 +1,49 @@
 # 作業ログ
 
+## 7月12日
+
+今日は4.5まで。
+
+```sh
+~/osbook/devenv/run_qemu.sh  ~/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi ~/workspace/mikanos/kernel/kernel.elf
+```
+
+配置new、聞いたことはあっても使ったのは始めて。後は、
+
+```cpp
+pixel_writer = new(pixel_writer_buf)
+        BGRResv8BitPerColorPixelWriter{frame_buffer_config};
+```
+
+という文法を初めてみた。C++11から導入された、[一様初期化](https://cpprefjp.github.io/lang/cpp11/uniform_initialization.html)というらしい。
+
+例えば引数の無いクラス`Hoge`があったとして、
+
+```sh
+Hoge h;
+```
+
+とすると`Hoge`のインスタンスを作るが、
+
+```sh
+Hoge h();
+```
+
+とすると、`Hoge`のインスタンスを返す関数の宣言とみなされる。
+
+## 7月5日
+
+osbook_day03cまで。自力でピクセルを表示してしまったが、後でちゃんとやるようだ。
+
+`MikanLoaderPkg/Main.c`を以下のように修正して、`FrameBufferBase`や`FrameBufferSize`を表示した。
+
+```diff
+-  Print(L"Kernel: 0x%0lx (%lu bytes)\n", kernel_base_addr, kernel_file_size);
++  //Print(L"Kernel: 0x%0lx (%lu bytes)\n", kernel_base_addr, kernel_file_size);
++  Print(L"FrameBufferBase: 0x%0lx Size:%d\n", gop->Mode->FrameBufferBase, gop->Mode->FrameBufferSize);
+```
+
+
 ## 6月28日
 
 Chapter 3.3まで。WSLの時計がまた狂っており、EDK IIのビルドに失敗していた。`run_qemu.sh`を使わず、自分でイメージを作って実行してみた。
