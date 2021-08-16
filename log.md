@@ -1,5 +1,13 @@
 # 作業ログ
 
+## 8月16日
+
+マウスカーソルをマウスにしてみた。
+
+![fig/210816_cursor.png](fig/210816_cursor.png)
+
+イベントループはmain関数内の`while(1)`であり、そこから`mikanos/kernel/usb/xhci/xchi.cpp`の`ProcessEvent`関数を呼んでいるらしいが、ここでの処理がどうなっているか追いきれなかった。MouseObserverの実装からして、現時点ではクリックイベントを取ることが考慮されていない？
+
 ## 7月26日
 
 5.5 コンソールクラス。osbook_day05eをチェックアウトしてコンパイル、ビルドするだけ。一応`main.cpp`で
