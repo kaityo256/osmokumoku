@@ -1,5 +1,81 @@
 # 作業ログ
 
+## 8月23日
+
+6章は(あまり理解できていないがとりあえず)わかったことにして7章へ。`volatile`属性について、ぼんやりとしか理解していなかったのを「揮発性」というキーワードで理解できた気がする。あと`reinterpret_cast`でメモリに直で書き込めるのか。UbuntuやMacだとランダマイズがあるので、CentOSで。
+
+```cpp
+#include <cstdio>
+
+int a = 1;
+
+int main(void) {
+  printf("%p\n",&a);
+  int* b = reinterpret_cast<int*>(0x601034);
+  *b = 2;
+  printf("%d\n",a);
+}
+```
+
+```sh
+$ g++ test.cpp
+$ ./a.out
+0x601034
+2
+```
+
+マジか。言われてみればそうだけど。
+
+ちなみに通常のコードではEnd of Interruptレジスタには書き込めないっぽい。
+
+```cpp
+#include <cstdio>
+#include <cstdint>
+
+int main(){
+  volatile auto eoi = reinterpret_cast<uint32_t*>(0xfee0000b0);
+  *eoi = 0;
+}
+```
+
+上記コードはSIGSEGVで死ぬ。
+
+ビットフィールドを初期化と勘違いした。
+
+```cpp
+struct hoge {
+  int a : 5;
+};
+```
+
+これ、MacのApple clang++でコンパイルするとhoge.aが偶然5になる。
+
+ビットフィールドの指定の例。
+
+```cpp
+#include <cstdio>
+
+struct hoge{
+    int a; // 4バイト
+    int b; // 4バイト
+} __attribute__((packed)); //合わせて8バイト
+
+struct hoge2{
+    int a : 4; // 4ビット
+    int b : 4; // 4ビット
+} __attribute__((packed)); // 合わせて8ビット(1バイト)
+
+
+int main(){
+    printf("%ld\n",sizeof(hoge));  // => 8
+    printf("%ld\n",sizeof(hoge2)); // => 1
+}
+```
+
+なるほどね。
+
+なんか、OS自作というより、知らなかったC/C++の言語仕様を知る会になっている。
+
 ## 8月16日
 
 マウスカーソルをマウスにしてみた。
