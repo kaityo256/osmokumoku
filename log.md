@@ -1,5 +1,25 @@
 # 作業ログ
 
+## 8月30日
+
+7章の中身の理解はとりあえずあきらめて動作確認する。
+
+```sh
+source ~/github/osbook/devenv/buildenv.sh
+cd ~/workspace/mikanos/kernel
+git switch -c osbook_day07a osbook_day07a
+make
+~/osbook/devenv/run_qemu.sh  ~/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi ~/workspace/mikanos/kernel/kernel.elf
+```
+
+マウスが動いたことは確認。
+
+割り込み制御の`cli`や`sti`が特権命令であることを確認(普通に実行するとSIGSEGV)。`hlt`も特権命令。
+
+`osbook_day07a`と`osbook_day07b`の違いを見るのに、git diffだと見づらかったのでVSCodeから見ようとGitLensを導入。なんかGitHubへのサインインを要求されて困ったが、とりあえずサインインせずに使えるようにした。
+
+とりあえず7章を終わったことにして、次は8章。
+
 ## 8月23日
 
 6章は(あまり理解できていないがとりあえず)わかったことにして7章へ。`volatile`属性について、ぼんやりとしか理解していなかったのを「揮発性」というキーワードで理解できた気がする。あと`reinterpret_cast`でメモリに直で書き込めるのか。UbuntuやMacだとランダマイズがあるので、CentOSで。
