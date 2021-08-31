@@ -1,5 +1,54 @@
 # 作業ログ
 
+## 9月6日
+
+8章を進める。
+
+まずは`osbook_day08a`をビルド。
+
+![memory](fig/210906_memory.png)
+
+まずは画面が出た。しかし、タイプが一つも現れない。edk2でビルドしなおす。
+
+![mmap](fig/210906_mmap.png)
+
+出た出た。
+
+検索してたら、[一人AdCでOS自作している人](https://ja.tech.jar.jp/ac/2018/day00.html)を見つけた。「x86 ring protection」みたいな「そういう単語」で検索すると、「そういう人」が見つかる(そういう人しか見つからない)。
+
+2章の理解が不十分なので、8章が理解できない。
+
+KernelMainをどこから呼び出しているか忘れたので調べた。ブートローダの`Main.c`の356行目
+
+```cpp
+  entry_point(&config, &memmap);
+```
+
+だな。`kernel.elf`を読み込んで、アドレスを計算し、そのエントリポイントを取得し、関数として呼び出している。引数はコンフィグ情報とメモリマップ。これを
+
+```cpp
+extern "C" void KernelMain(const FrameBufferConfig& frame_buffer_config,
+                           const MemoryMap& memory_map) {
+```
+
+で受け取る、と。
+
+`config`は`FrameBufferConfig`で、
+
+```cpp
+  struct FrameBufferConfig config = {
+    (UINT8*)gop->Mode->FrameBufferBase,
+    gop->Mode->Info->PixelsPerScanLine,
+    gop->Mode->Info->HorizontalResolution,
+    gop->Mode->Info->VerticalResolution,
+    0
+  };
+```
+
+で中身を作っている。GOPとはGraphics Output Protocol。`memmap`は`gBS->GetMemoryMap`で受け取っている。`gBS`はUFEIのブートサービス。
+
+理解が曖昧なまま進んだので厳しい。
+
 ## 8月30日
 
 7章の中身の理解はとりあえずあきらめて動作確認する。
