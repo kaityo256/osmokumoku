@@ -1,5 +1,71 @@
 # 作業ログ
 
+## 9月13日
+
+ページテーブルの情報をCR3レジスタに書き込んでいる(p. 197)。確かCR3は特権プロセスでないと読み書きできなかった気がする。CR3については[ここ](https://babyron64.hatenablog.com/entry/2017/12/22/232423)が詳しかった。
+
+ちょっと`cr0`の値を読んでみようとしたが、やはりダメですね。
+
+![cr0](fig/210913_cr0.png)
+
+operator new → malloc → sbrkの順番で呼ばれていることをgdbで確認。
+
+```cpp
+#include <cstdio>
+
+int main(){
+        int *a = new int[100];
+}
+```
+
+```sh
+$ g++ -g test.cpp
+$ gdb ./a.out
+(gdb) b sbrk
+(gdb) r
+Breakpoint 1, __GI___sbrk (increment=135168) at sbrk.c:32
+32      sbrk.c: そのようなファイルやディレクトリはありません.
+(gdb) bt
+(gdb) bt
+#0  __GI___sbrk (increment=135168) at sbrk.c:32
+#1  0x00007ffff7c7cd0d in __GI___default_morecore (increment=<optimized out>) at morecore.c:47
+#2  0x00007ffff7c776f5 in sysmalloc (nb=nb@entry=656, av=av@entry=0x7ffff7dc8b80 <main_arena>) at malloc.c:2470
+#3  0x00007ffff7c78913 in _int_malloc (av=av@entry=0x7ffff7dc8b80 <main_arena>, bytes=bytes@entry=640) at malloc.c:4141
+#4  0x00007ffff7c78afb in tcache_init () at malloc.c:2982
+#5  0x00007ffff7c79d8e in tcache_init () at malloc.c:3044
+#6  __GI___libc_malloc (bytes=72704) at malloc.c:3044
+#7  malloc_hook_ini (sz=72704, caller=<optimized out>) at hooks.c:32
+#8  0x00007ffff7e75c1a in ?? () from /lib/x86_64-linux-gnu/libstdc++.so.6
+#9  0x00007ffff7fe0b8a in ?? () from /lib64/ld-linux-x86-64.so.2
+#10 0x00007ffff7fe0c91 in ?? () from /lib64/ld-linux-x86-64.so.2
+#11 0x00007ffff7fd013a in ?? () from /lib64/ld-linux-x86-64.so.2
+#12 0x0000000000000001 in ?? ()
+#13 0x00007fffffffeab2 in ?? ()
+#14 0x0000000000000000 in ?? ()
+```
+
+`operator new`から呼ばれてるのがよくわからないな。調べてみたら、`operator new`よりも先に`sbrk`が呼ばれている。
+
+```sh
+$ strace ./a.out |& grep brk
+brk(NULL)                               = 0x558fe4c89000
+brk(NULL)                               = 0x558fe4c89000
+brk(0x558fe4caa000)                     = 0x558fe4caa000
+```
+
+システムコールは`brk`で、`sbrk`は`brk`を呼んでいるだけっぽい。
+
+```txt
+ mov    $0xc,%eax
+ syscall
+```
+
+これかな？
+
+![mouse](fig/210913_mouse.png)
+
+マウスの重ね合わせ処理はできた。system callとの関係はわからず。
+
 ## 9月6日
 
 8章を進める。
