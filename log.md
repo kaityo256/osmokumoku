@@ -1,5 +1,51 @@
 # 作業ログ
 
+## 9月27日
+
+9.4 重ね合わせ処理の時間計測。
+
+![時間計測](fig/210927_time.png)
+
+まずは時間計測した。Local APICタイマを使っているらしい。APICはAdvanced Programmable Interrupt Controllerの略。PICの一種であり、IntelはIntel 8259という石があったらしい。割り込み用の石？
+
+読み書きにメモリを直打ちしているので、おそらく特権命令が必要であろう。マルチコアに対応するために各コアに搭載されている。
+
+Intelの石には歴史的にハードウェアタイマーが多数実装されているらしい。こういうの調べだすとキリがないな。
+
+いい加減、これaliasかけるか。
+
+```sh
+~/osbook/devenv/run_qemu.sh  ~/edk2/Build/MikanLoaderX64/DEBUG_CLANG38/X64/Loader.efi ~/workspace/mikanos/kernel/kernel.elf
+```
+
+`mikan`にalias張った。`osbook_day09c`確認。
+
+`osbook_day09d`。スクロールが始まるとものすごく遅くなることを確認。大体数十万から数千万オーダーへ。
+
+`osbook_day09e`。スクロールが始まっても数百万オーダーに軽減。10倍程度の改善。
+
+9章おしまい。
+
+10章。マウスが周期境界条件になっていることを確認。`osbook_day10a`で、マウスが外に逃げないことを確認。
+
+`osbook_day10b`ウィンドウが出てきた。
+
+![Hello Window](fig/210927_window.png)
+
+`osbook_day10c`カウンタ表示。ものすごくちらつく。
+
+`osbook_day10d`カウンタ表示。ちらつき軽減。マウスを載せるとちらつく。
+
+`osbook_day10e`カウンタ表示。バックバッファによる表示。マウスを載せてもちらつかなくなった。ダブルバッファリングですね。
+
+`osbook_day10f` マウスで動いた。他のも動いちゃう。
+
+`osbook_day10g` マウスぐりぐり。他のは動かなくなった。
+
+![Hello Window2](fig/210927_window2.png)
+
+これで10章終了。
+
 ## 9月13日
 
 ページテーブルの情報をCR3レジスタに書き込んでいる(p. 197)。確かCR3は特権プロセスでないと読み書きできなかった気がする。CR3については[ここ](https://babyron64.hatenablog.com/entry/2017/12/22/232423)が詳しかった。
